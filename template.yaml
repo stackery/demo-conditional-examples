@@ -10,6 +10,7 @@ Resources:
           Protocol: sqs
     Metadata:
       StackeryName: UserServicesTopic
+    Condition: UserServicesTopicCreateNewResource
   NewQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -29,7 +30,10 @@ Resources:
             Resource: !GetAtt NewQueue.Arn
             Condition:
               ArnEquals:
-                aws:SourceArn: !Ref UserServicesTopic
+                aws:SourceArn: !If
+                  - UserServicesTopicUseExistingResource
+                  - !Ref UserServicesTopicExistingResource
+                  - !Ref UserServicesTopic
       Queues:
         - !Ref NewQueue
   MicroService25:
@@ -51,9 +55,19 @@ Resources:
         Topic:
           Type: SNS
           Properties:
-            Topic: !Ref UserServicesTopic
+            Topic: !If
+              - UserServicesTopicUseExistingResource
+              - !Ref UserServicesTopicExistingResource
+              - !Ref UserServicesTopic
     Metadata:
       StackeryName: MicroService25
+  UserServicesTopicExistingResource:
+    Type: Custom::StackeryExistingResource
+    Properties:
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:stackery-agent-commander
+      Type: topic
+      Data: !Ref EnvConfigsnscrudtopicarnAsString
+    Condition: UserServicesTopicUseExistingResource
 Parameters:
   StackTagName:
     Type: String
@@ -61,3 +75,15 @@ Parameters:
   EnvironmentTagName:
     Type: String
     Description: Environment Name (injected by Stackery at deployment time)
+  EnvConfigsnscrudtopicarnAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/sns_crud_topic_arn
+Conditions:
+  UserServicesTopicCreateNewResource: !Equals
+    - 'false'
+    - !Ref EnvConfigsnscrudtopicarnAsString
+  UserServicesTopicUseExistingResource: !Not
+    - Condition: UserServicesTopicCreateNewResource
+Metadata:
+  EnvConfigParameters:
+    EnvConfigsnscrudtopicarnAsString: sns_crud_topic_arn
