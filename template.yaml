@@ -5,37 +5,9 @@ Resources:
     Type: AWS::SNS::Topic
     Properties:
       TopicName: !Sub ${AWS::StackName}-UserServicesTopic
-      Subscription:
-        - Endpoint: !GetAtt NewQueue.Arn
-          Protocol: sqs
     Metadata:
       StackeryName: UserServicesTopic
     Condition: UserServicesTopicCreateNewResource
-  NewQueue:
-    Type: AWS::SQS::Queue
-    Properties:
-      QueueName: !Sub ${AWS::StackName}-NewQueue
-    Metadata:
-      StackeryName: NewQueue
-  UserServicesTopicToNewQueuePermission:
-    Type: AWS::SQS::QueuePolicy
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: sns.amazonaws.com
-            Action: sqs:SendMessage
-            Resource: !GetAtt NewQueue.Arn
-            Condition:
-              ArnEquals:
-                aws:SourceArn: !If
-                  - UserServicesTopicUseExistingResource
-                  - !Ref UserServicesTopicExistingResource
-                  - !Ref UserServicesTopic
-      Queues:
-        - !Ref NewQueue
   MicroService25:
     Type: AWS::Serverless::Function
     Properties:
