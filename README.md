@@ -1,4 +1,4 @@
-#Advanced CloudFormation Pattern: Conditionalize like a PRO
+# Advanced CloudFormation Pattern: Conditionalize like a PRO
 
 AWS CloudFormation provides the developer with the capability to define *Conditions* statements that specificy the circumstances under which resources are provisioned depending on the environement the stack is being deployed into, such as a test environment versus a production environment.
 
