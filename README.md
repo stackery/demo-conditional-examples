@@ -12,15 +12,15 @@ Rather than raw servers, cloud-native applications are composed of a collection 
 
 Without condition statements, many turn to creating a version of the template for each deploy target or including external config files during a step of the release process. While these techniques work, they introduce un-intended complexity, especially as the number of microservices and team members scale. 
 
-The Stackery approach to defining __condition__ statements combined with environment specific configuration parameters results in a powerful pattern for controlling the circumstances under which resources are provisioned depending on the environement the stack is being deployed into, such as a __test environment__ versus a __production environment__.
+The Stackery approach to defining __condition__ statements combined with environment specific configuration parameters results in a powerful pattern for controlling the circumstances under which resources are provisioned depending on the environment the stack is being deployed into, such as a __test environment__ versus a __production environment__.
 
-A single IAC template per application stack is simpler and less brittle then multiple files.
+A single IaC template per application stack is simpler and less brittle than multiple files.
 
 The benefits of the pattern shown below are ease of understanding, ease of change, ease of debugging, and flexibility.
 
 ### Example Use Case
 
-An existing stack deployed to the "prod" environment includes an SNS publish/subscribe topic related to that USER create, update, and delete messages. 
+An existing stack deployed to the "prod" environment includes an SNS publish/subscribe topic related to production create, update, and delete messages. 
 
 Chris is tasked with creating a new service called MicroService25 that needs to:
 
@@ -33,21 +33,21 @@ Chris is tasked with creating a new service called MicroService25 that needs to:
 
 Condition statements defined by the developer make use of [condition functions](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html).
 
-The condition functions Stackery utilizes are such as Fn::If, Fn::Equals, and Fn::Not
+The condition functions Stackery utilizes are Fn::If, Fn::Equals, and Fn::Not. Within YAML formatted templates, these are abbreviated to !If, !Equals, and !Not.
 
 ## Stackery Environments Parameters
 
-Every Stackery environment includes a configuration store that allows for configuration values to be stored in JSON format. The values are automatically persisted in (AWS Systems Manager > Parameter store)[https://console.aws.amazon.com/systems-manager/parameters?region=us-east-1]
+Every Stackery environment includes a configuration store that allows for values to be stored in JSON format. The values are automatically persisted in (AWS Systems Manager > Parameter store)[https://console.aws.amazon.com/systems-manager/parameters]
 
 __Chris Environment__
-```yaml
+```json
 {
   "sns_crud_topic_arn": "false"
 }
 ```
 
 __Prod Environment__
-```yaml
+```json
 {
   "sns_crud_topic_arn": "arn:aws:sns:us-east-1:394493744367:stackery-186910833539367-topic60FA4D08"
 }
@@ -70,9 +70,9 @@ __Prod Environment__
     ```
     Because this resource is setup with a condition, it's only created if the condition is true.
 
-    During a deployment to the __Chris__ Environment, UserServicesTopicCreateNewResource will evaluate to true (see below) which means that this condition will result to true and therefore this resource will be provisioned.
+    During a deployment to the __Chris__ Environment, UserServicesTopicCreateNewResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource will be provisioned.
     
-    During a deployment to the __Prod__ Environment, UserServicesTopicCreateNewResource will evaluate to false (see below) which means that this condition will result to false and therefore this resource will NOT be provisioned.
+    During a deployment to the __Prod__ Environment, UserServicesTopicCreateNewResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource will NOT be provisioned.
 
     
 2. __MicroService25__ (Line 11)
@@ -93,6 +93,7 @@ __Prod Environment__
         Metadata:
           StackeryName: MicroService25
     ```
+    When necessary, Fn::If (!If) statements can be used with conditions to select values from new resources or from existing resources (via a proxy CloudFormation custom resource).
 
 
 3. __UserServicesTopicExistingResource__ (Line 36)
@@ -108,9 +109,9 @@ __Prod Environment__
     ```
     Because this resource is setup with a condition, it's only created if the condition is true.
     
-    During a deployment to the __Chris__ Environment, UserServicesTopicUseExistingResource will evaluate to false (see below) which means that this condition will result to true and therefore this resource will NOT be provisioned.
+    During a deployment to the __Chris__ Environment, UserServicesTopicUseExistingResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource will NOT be provisioned.
     
-    During a deployment to the __Prod__ Environment, UserServicesTopicUseExistingResource will evaluate to true (see below) which means that this condition will result to true and therefore this resource will be provisioned.
+    During a deployment to the __Prod__ Environment, UserServicesTopicUseExistingResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource will be provisioned.
 
 
 ### Parameters Section:
@@ -122,7 +123,7 @@ __Prod Environment__
       Type: AWS::SSM::Parameter::Value<String>
       Default: /<EnvironmentName>/sns_crud_topic_arn
     ```
-    This parameter instructs CloudFormation to check for, and use a value, stored in Stackery Environment Parameters in the environment that is being deployed to, all at deploy time
+    This parameter instructs CloudFormation to use a value, stored in Stackery Environment Parameters in the environment that is being deployed to, as a template parameter evaluated at deploy time.
 
 ## Spoiler Alert! Here's the where the heart of the logic lies!
 
@@ -139,15 +140,15 @@ __Prod Environment__
     ```
     During a deployment to the __Chris__ Environment
 
-    * `UserServicesTopicCreateNewResource` returns **true** because the value we saved in the in the config store ("false") is equal to the other value provided ('false').
+    * The `UserServicesTopicCreateNewResource` condition evaluates to **true** because the value we saved in the in the config store ("false") is equal to the other value provided ('false').
 
-    * `UserServicesTopicUseExistingResource` returns **false** because UserServicesTopicCreateNewResource returns ('true') in this environment.
+    * The `UserServicesTopicUseExistingResource` condition evaluates to **false** because UserServicesTopicCreateNewResource returns ('true') in this environment.
 
     During a deployment to the __Prod__ Environment
 
-    * `UserServicesTopicCreateNewResource` returns **false** because the value we saved in the config store ("arn:aws:sns:us-east-1:394493744367:stackery-186910833539367-topic60FA4D08") is NOT equal to the other value provided ('false').
+    * The `UserServicesTopicCreateNewResource` condition evaluates to **false** because the value we saved in the config store ("arn:aws:sns:us-east-1:394493744367:stackery-186910833539367-topic60FA4D08") is NOT equal to the other value provided ('false').
 
-    * `UserServicesTopicCreateNewResource` returns **true** because UserServicesTopicCreateNewResource returns ('false') in this environment..
+    * The `UserServicesTopicCreateNewResource` condition evaluates to **true** because UserServicesTopicCreateNewResource returns ('false') in this environment..
 
 
 ## Full Template
