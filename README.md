@@ -1,10 +1,29 @@
 # Advanced CloudFormation Pattern: Conditionalize like a PRO
 
-AWS CloudFormation provides the developer with the capability to define *Conditions* statements that specificy the circumstances under which resources are provisioned depending on the environement the stack is being deployed into, such as a test environment versus a production environment.
+AWS CloudFormation allows for the definition of *Condition* statements that evaluate to true or false at deploy time. 
 
-Stackery's 1-button **"use existing resource"** option and automated hierarchical management of **environment specific** configuration data in AWS Systems Parameter Store makes it simple to create conditional logic that results in the utilization of existing resources OR result in the provisioning of new resources.
+Stackery's 1-button **"use existing resource"** option and automated management of **environment specific** configuration data in AWS Systems Parameter Store makes it easy to create conditional logic that results in the utilization of existing resources under certain circumstances OR the provisioning of new resources in other circumstances.
 
 This readme and the template.yaml provide an example for us to learn from.
+
+### Why is this important? Cloud-side development is about service composition
+
+Rather than raw servers, cloud-native applications are composed of a collection of managed cloud services. Localhost has become a poor representation of the production environment, as it is impossible to replicate all of the functionality of AWS locally on a laptop.
+
+Balancing simplicity with power is the name of the game. 
+
+The Stackery approach to defining *Condition* statements combined with environment specific configuration parameters results in a powerful pattern for controlling the circumstances under which resources are provisioned depending on the environement the stack is being deployed into, such as a **test environment** versus a **production environment.**
+
+
+### Example Use Case
+
+An existing stack deployed to the "prod" environment includes an SNS publish/subscribe topic related to that USER create, update, and delete messages. 
+
+Chris is tasked with creating a new service called MicroService25 that needs to:
+
+  a) subscribe to a newly provisioned "chris" SNS topic when deployed to the "chris" environment
+
+  b) subscribe to an existing "prod" SNS topic when deployed to prod 
 
 ### Condition Functions
 
@@ -20,17 +39,6 @@ Returns true if two values are equal or false if they aren't.
 
 ##### Fn::Not is the same as !Not
 Returns true for a condition that evaluates to false or returns false for a condition that evaluates to true.
-
-### Example Use Case
-
-An existing stack deployed to the "prod" environment includes an SNS publish/subscribe topic related to that USER create, update, and delete messages. 
-
-Chris is tasked with creating a new service called MicroService25 that needs to:
-
-  a) subscribe to a newly provisioned "chris" SNS topic when deployed to the "chris" environment
-
-  b) subscribe to an existing "prod" SNS topic when deployed to prod 
-
  
 
 ### Stackery Environments & Environment Parameters that support this example
