@@ -150,7 +150,7 @@ __Prod Environment__
     * `UserServicesTopicCreateNewResource` returns **true** because UserServicesTopicCreateNewResource returns ('false') in this environment..
 
 
-### Full Template
+## Full Template
 
 The template can be found in github at this URL: https://github.com/stackery/demo-conditional-examples/blob/master/template.yaml
 
