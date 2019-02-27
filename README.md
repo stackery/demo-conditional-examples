@@ -2,7 +2,7 @@
 
 AWS CloudFormation allows for the definition of *Condition* statements that evaluate to true or false at deploy time. 
 
-Stackery's 1-button **"use existing resource"** option and automated management of **environment specific** configuration data in AWS Systems Parameter Store makes it easy to create conditional logic that results in the utilization of existing resources under certain circumstances OR the provisioning of new resources in other circumstances.
+Stackery's 1-button **"use existing resource"** option and automated management of **environment specific** configuration data in makes it easy to create conditional logic that results in the utilization of existing resources under certain circumstances OR the provisioning of new resources in other circumstances.
 
 This readme and the template.yaml provide an example for us to learn from.
 
