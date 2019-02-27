@@ -14,7 +14,7 @@ The Stackery approach to defining *Condition* statements combined with environme
 
 A single IAC template per application stack is simpler and less brittle then multiple files.
 
-The benefits of simplicity are: ease of understanding, ease of change, ease of debugging, flexibility.
+The benefits of the pattern we've created are: ease of understanding, ease of change, ease of debugging, flexibility.
 
 ### Example Use Case
 
