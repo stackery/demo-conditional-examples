@@ -53,7 +53,7 @@ __Prod Environment__
 }
 ```
 
-## Key Contents of the IAC Template (automatically defined with conditional logic by Stackery)
+## Key Contents of the IAC Template (automatically created by Stackery)
 
 ### Resource Section: 
 
