@@ -8,12 +8,13 @@ This readme and the template.yaml provide an example for us to learn from.
 
 ### Why is this important? Cloud-side development is about service composition
 
-Rather than raw servers, cloud-native applications are composed of a collection of managed cloud services. Localhost has become a poor representation of the production environment, as it is impossible to replicate all of the functionality of AWS locally on a laptop.
-
-Balancing simplicity with power is the name of the game. 
+Rather than raw servers, cloud-native applications are composed of a collection of managed cloud services. Localhost has become a poor representation of the production environment, as it is impossible to replicate all of the functionality of AWS locally on a laptop. As such, infrastructure-as-code (IaC) has become the best practice for configuring application stacks. Without condition statements, many turn to creating a version of the template for each deploy target or including external config files during a step of the CI/CD process. While these techniques work, they are introduce un-intended complexity as the number of microservices and team members scale. 
 
 The Stackery approach to defining *Condition* statements combined with environment specific configuration parameters results in a powerful pattern for controlling the circumstances under which resources are provisioned depending on the environement the stack is being deployed into, such as a **test environment** versus a **production environment.**
 
+A single IAC template per application stack is simpler and less brittle then multiple files.
+
+The benefits of simplicity are: ease of understanding, ease of change, ease of debugging, flexibility.
 
 ### Example Use Case
 
