@@ -20,13 +20,13 @@ The benefits of the pattern shown below are ease of understanding, ease of chang
 
 ### Example Use Case
 
-An existing stack deployed to the "prod" environment includes an SNS publish/subscribe topic related to production create, update, and delete messages. 
+An existing stack deployed to the __Prod__ Environment includes an SNS publish/subscribe topic related to production create, update, and delete messages. 
 
 Chris is tasked with creating a new service called MicroService25 that needs to:
 
-  a) subscribe to a newly provisioned "chris" SNS topic when deployed to the "chris" environment
+  a) subscribe to a newly provisioned SNS topic when deployed to the __Chris__ Environment
 
-  b) subscribe to an existing "prod" SNS topic when deployed to prod 
+  b) subscribe to an existing SNS topic when deployed to __Prod__ Environment 
 
 
 ## Condition Functions
@@ -70,9 +70,9 @@ __Prod Environment__
     ```
     Because this resource is setup with a condition, it's only created if the condition is true.
 
-    During a deployment to the __Chris__ Environment, UserServicesTopicCreateNewResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource will be provisioned.
+    During a deployment to the __Chris__ Environment, UserServicesTopicCreateNewResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource __will be provisioned__.
     
-    During a deployment to the __Prod__ Environment, UserServicesTopicCreateNewResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource will NOT be provisioned.
+    During a deployment to the __Prod__ Environment, UserServicesTopicCreateNewResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource __will NOT be provisioned__.
 
     
 2. __MicroService25__ (Line 11)
@@ -109,9 +109,9 @@ __Prod Environment__
     ```
     Because this resource is setup with a condition, it's only created if the condition is true.
     
-    During a deployment to the __Chris__ Environment, UserServicesTopicUseExistingResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource will NOT be provisioned.
+    During a deployment to the __Chris__ Environment, UserServicesTopicUseExistingResource will evaluate to false (see below) which means that this resource's condition will evaluate to false and therefore this resource __will NOT be provisioned__.
     
-    During a deployment to the __Prod__ Environment, UserServicesTopicUseExistingResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource will be provisioned.
+    During a deployment to the __Prod__ Environment, UserServicesTopicUseExistingResource will evaluate to true (see below) which means that this resource's condition will evaluate to true and therefore this resource __will be provisioned__.
 
 
 ### Parameters Section:
